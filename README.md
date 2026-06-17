@@ -100,17 +100,10 @@ pdn_transient_test/
     ├── data_logger.py             
     └── report_generator.py        
 
----
-
-
-
-
-
+```
 ## Testing Process
 
 Number of runs per rail, in sequence (+3V6 → +1V8 → +3V3 → +2V5):
-
-```
 1. PSU CH1 set to +5.000 V / 5 A, output ON
 2. E-load settings: transient CC mode, 100 Hz, 50 % duty cycle
       Low current = 10 % of Imax   (baseline)
@@ -128,8 +121,7 @@ Number of runs per rail, in sequence (+3V6 → +1V8 → +3V3 → +2V5):
       g. Pass/fail test result logging into CSV file
 7. Disable E-load inputs
 8. Operator prompts to test next rail
-```
----
+
 
 ## Output Files
 
