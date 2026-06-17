@@ -126,6 +126,8 @@ Number of runs per rail, in sequence (+3V6 → +1V8 → +3V3 → +2V5):
 ## Output Files
 
 
-transient_test_<ts>.csv-All 40 capture measurements + Pass/Fail 
-pdn_transient_report_<ts>.html-Self-contained HTML test report 
-run_<ts>.log-Full console + SCPI debug log 
+transient_test_<ts>.csv - All 40 capture measurements + Pass/Fail 
+
+pdn_transient_report_<ts>.html-Self - contained HTML test report 
+
+run_<ts>.log - Full console + SCPI debug log 
