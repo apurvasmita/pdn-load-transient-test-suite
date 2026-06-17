@@ -1,0 +1,76 @@
+# test_config.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+# Configuration for PDN Load Transient Test
+# Digantara Junior Hardware Test Engineer Assessment
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# VISA resource strings — update to match your GPIB/USB address scan.
+# Run: python -c "import pyvisa; rm=pyvisa.ResourceManager(); print(rm.list_resources())"
+
+instruments:
+  power_supply:
+    resource: "GPIB0::5::INSTR"      # Keithley 2230-30-1
+    model:    "Keithley 2230-30-1"
+
+  electronic_load:
+    resource: "GPIB0::8::INSTR"      # Keithley 2380 Series
+    model:    "Keithley 2380-500-15"
+
+  oscilloscope:
+    # USB address: confirm via VISA scan after connecting USB-B cable
+    resource: "USB0::0x2A8D::0x9001::MY56310203::INSTR"   # Keysight DSOX6004A
+    model:    "Keysight DSOX6004A"
+
+  dmm:
+    resource: "GPIB0::22::INSTR"     # Keithley DMM6500
+    model:    "Keithley DMM6500"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Input supply (+5 V rail driving the PDN)
+# ─────────────────────────────────────────────────────────────────────────────
+input_supply:
+  channel:       1
+  voltage:       5.000    # V
+  current_limit: 5.000    # A  (headroom for all four rails at max load)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PDN output rails
+#
+# scope_channel assignment:
+#   CH1 → +3V6    CH2 → +1V8    CH3 → +3V3    CH4 → +2V5
+#
+# One rail is tested at a time (E-load is single-channel).
+# Remaining scope channels display idle rail voltages for context.
+# ─────────────────────────────────────────────────────────────────────────────
+rails:
+  - name:            "+3V6"
+    nominal_voltage:  3.6
+    tolerance_pct:    5.0
+    max_current:      2.5     # A  (from Annexure)
+    scope_channel:    1
+    low_current_pct:  10.0    # %  → 0.25 A
+    high_current_pct: 90.0    # %  → 2.25 A
+
+  - name:            "+1V8"
+    nominal_voltage:  1.8
+    tolerance_pct:    5.0
+    max_current:      3.0
+    scope_channel:    2
+    low_current_pct:  10.0    # → 0.30 A
+    high_current_pct: 90.0    # → 2.70 A
+
+  - name:            "+3V3"
+    nominal_voltage:  3.3
+    tolerance_pct:    5.0
+    max_current:      3.0
+    scope_channel:    3
+    low_current_pct:  10.0    # → 0.30 A
+    high_current_pct: 90.0    # → 2.70 A
+
+  - name:            "+2V5"
+    nominal_voltage:  2.5
+    tolerance_pct:    5.0
+    max_current:      1.5
+    scope_channel:    4
+    low_current_pct:  10.0    # → 0.15 A
+    high_current_pct: 90.0    # → 1.35 A

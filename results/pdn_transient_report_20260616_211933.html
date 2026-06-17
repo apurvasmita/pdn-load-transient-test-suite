@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>PDN Load Transient Test Report — Digantara</title>
+<style>
+  body  { font-family: 'Segoe UI', Arial, sans-serif; margin: 28px;
+           color: #222; background: #fff; }
+  h1   { color: #2c3e50; margin-bottom: 4px; }
+  h2   { color: #34495e; border-bottom: 2px solid #bdc3c7;
+           padding-bottom: 4px; margin-top: 28px; }
+  .badge { display: inline-block; padding: 6px 20px; border-radius: 5px;
+            color: #fff; font-size: 1.1em; font-weight: bold; }
+  .pass-badge { background: #27ae60; }
+  .fail-badge { background: #e74c3c; }
+  .meta  { background: #f4f6f7; border: 1px solid #d5d8dc;
+            padding: 12px 16px; border-radius: 5px; margin-bottom: 18px;
+            line-height: 1.7; }
+  table  { border-collapse: collapse; width: 100%; margin-bottom: 24px;
+            font-size: 0.92em; }
+  th     { background: #2c3e50; color: #fff; padding: 8px 10px;
+            text-align: left; white-space: nowrap; }
+  td     { border: 1px solid #d5d8dc; padding: 6px 9px;
+            vertical-align: top; }
+  tr:nth-child(even) td { background: #f4f6f7; }
+  .pass  { color: #27ae60; font-weight: bold; }
+  .fail  { color: #e74c3c;   font-weight: bold; }
+  .mono  { font-family: monospace; font-size: 0.88em; }
+  footer { margin-top: 40px; font-size: 0.8em; color: #888; }
+</style>
+</head><body>
+
+<h1>PDN Load Transient Test Report</h1>
+<div class="meta">
+  <b>Date/Time :</b> 2026-06-16 21:19:33 &nbsp;|&nbsp;
+  <b>Operator  :</b> Apurva Smita &nbsp;|&nbsp;
+  <b>DUT S/N   :</b> SN-001 [DRY RUN] &nbsp;|&nbsp;
+  <b>Board Rev :</b> Rev-A<br>
+  <b>Instrument setup:</b>
+  Keithley 2230-30-1 (PSU) · Keithley 2380 (E-Load) ·
+  Keysight DSOX6004A (Scope) · Keithley DMM6500 (DMM)<br>
+  <b>Result: </b><span class="badge fail-badge">OVERALL FAIL</span>
+</div>
+
+<h2>Test Assumptions</h2>
+<table>
+<tr><th>Parameter</th><th>Assumed Value / Rationale</th></tr>
+<tr><td>Input supply</td><td>+5.000 V @ max 5 A via Keithley 2230-30-1 CH1</td></tr>
+<tr><td>Low-load current</td><td>10 % of rail Imax (avoids zero-load CCM artefacts)</td></tr>
+<tr><td>High-load current</td><td>90 % of rail Imax (worst-case without OCP trip)</td></tr>
+<tr><td>Transient frequency</td><td>100 Hz — 5 ms per half-period;
+  fits inside 2 ms scope window per step edge</td></tr>
+<tr><td>Captures per rail</td><td>10 (statistical sample for intermittent faults)</td></tr>
+<tr><td>Scope time/div</td><td>200 µs/div · 2 ms total window · −500 µs pre-trigger</td></tr>
+<tr><td>Trigger source</td><td>EXT (Keithley 2380 TRIG OUT → scope rear-panel EXT BNC)</td></tr>
+<tr><td>Ripple crest factor</td><td>3.46× RMS → p-p (triangle wave, per buck converter model)</td></tr>
+<tr><td>Settling criterion</td><td>±1.0 % of Vnom for 50 consecutive samples</td></tr>
+</table>
+
+<h2>Rail Summary</h2>
+<table>
+<tr>
+  <th>Rail</th>
+  <th>DC Voltage mean ± σ (V)</th>
+  <th>Ripple mean / max (mVpp)</th>
+  <th>Deviation mean / max (%)</th>
+  <th>Settling mean / max (µs)</th>
+  <th>Pass count</th>
+  <th>Result</th>
+</tr>
+
+<tr>
+  <td><b>+3V6</b></td>
+  <td>3.6053 ± 0.0041</td>
+  <td>25.1 / 35.9</td>
+  <td>1.82 / 2.31</td>
+  <td>178 / 232</td>
+  <td>10 / 10</td>
+  <td class="pass">PASS</td>
+</tr>
+<tr>
+  <td><b>+1V8</b></td>
+  <td>1.8066 ± 0.0027</td>
+  <td>28.7 / 42.0</td>
+  <td>1.71 / 2.19</td>
+  <td>196 / 284</td>
+  <td>10 / 10</td>
+  <td class="pass">PASS</td>
+</tr>
+<tr>
+  <td><b>+3V3</b></td>
+  <td>3.3044 ± 0.0044</td>
+  <td>40.2 / 71.5</td>
+  <td>3.39 / 7.03</td>
+  <td>282 / 600</td>
+  <td>7 / 10</td>
+  <td class="fail">FAIL</td>
+</tr>
+<tr>
+  <td><b>+2V5</b></td>
+  <td>2.5059 ± 0.0045</td>
+  <td>27.7 / 34.8</td>
+  <td>2.02 / 3.17</td>
+  <td>190 / 271</td>
+  <td>10 / 10</td>
+  <td class="pass">PASS</td>
+</tr>
+</table>
+
+<h2>Acceptance Criteria</h2>
+<table>
+<tr><th>Parameter</th><th>Limit</th><th>Source</th></tr>
+<tr><td>DC output voltage accuracy</td>
+    <td>Vnom ± 5 %</td>
+    <td>Annexure — Test Parameters</td></tr>
+<tr><td>Steady-state output ripple (Vpp)</td>
+    <td>&lt; 50 mV</td>
+    <td>Assessment specification</td></tr>
+<tr><td>Peak transient voltage deviation</td>
+    <td>&lt; ± 5 % of Vnom</td>
+    <td>Assumed: equals DC tolerance band</td></tr>
+<tr><td>Settling time to ± 1 % of Vnom</td>
+    <td>&lt; 500 µs</td>
+    <td>Assumed: typical space-grade PDN budget</td></tr>
+</table>
+
+<h2>Capture-Level Details</h2>
+<table>
+<tr>
+  <th>Rail</th><th>#</th><th>Timestamp</th>
+  <th>Vdc (V)</th><th>Ripple (mVpp)</th>
+  <th>Deviation (%)</th><th>Settling (µs)</th>
+  <th>P/F</th><th>Fail reason(s)</th>
+</tr>
+
+<tr>
+  <td>+3V6</td>
+  <td>1</td>
+  <td class="mono">20260616_211933_447378</td>
+  <td>3.6044</td>
+  <td>27.0</td>
+  <td>1.73</td>
+  <td>212</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>2</td>
+  <td class="mono">20260616_211933_457859</td>
+  <td>3.6045</td>
+  <td>19.0</td>
+  <td>2.00</td>
+  <td>168</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>3</td>
+  <td class="mono">20260616_211933_468517</td>
+  <td>3.6041</td>
+  <td>28.7</td>
+  <td>1.94</td>
+  <td>232</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>4</td>
+  <td class="mono">20260616_211933_479281</td>
+  <td>3.6076</td>
+  <td>28.7</td>
+  <td>1.36</td>
+  <td>134</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>5</td>
+  <td class="mono">20260616_211933_489755</td>
+  <td>3.6060</td>
+  <td>35.9</td>
+  <td>1.82</td>
+  <td>175</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>6</td>
+  <td class="mono">20260616_211933_500297</td>
+  <td>3.6071</td>
+  <td>19.3</td>
+  <td>1.61</td>
+  <td>202</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>7</td>
+  <td class="mono">20260616_211933_510545</td>
+  <td>3.6085</td>
+  <td>26.6</td>
+  <td>2.03</td>
+  <td>191</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>8</td>
+  <td class="mono">20260616_211933_520858</td>
+  <td>3.6081</td>
+  <td>21.3</td>
+  <td>2.14</td>
+  <td>112</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>9</td>
+  <td class="mono">20260616_211933_531308</td>
+  <td>3.5945</td>
+  <td>24.4</td>
+  <td>1.25</td>
+  <td>219</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V6</td>
+  <td>10</td>
+  <td class="mono">20260616_211933_542086</td>
+  <td>3.6077</td>
+  <td>20.7</td>
+  <td>2.31</td>
+  <td>135</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>1</td>
+  <td class="mono">20260616_211933_552470</td>
+  <td>1.8047</td>
+  <td>26.2</td>
+  <td>1.87</td>
+  <td>217</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>2</td>
+  <td class="mono">20260616_211933_562901</td>
+  <td>1.8076</td>
+  <td>30.1</td>
+  <td>2.19</td>
+  <td>202</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>3</td>
+  <td class="mono">20260616_211933_573264</td>
+  <td>1.8025</td>
+  <td>23.7</td>
+  <td>1.52</td>
+  <td>202</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>4</td>
+  <td class="mono">20260616_211933_584154</td>
+  <td>1.8040</td>
+  <td>42.0</td>
+  <td>1.31</td>
+  <td>131</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>5</td>
+  <td class="mono">20260616_211933_594661</td>
+  <td>1.8081</td>
+  <td>36.5</td>
+  <td>2.10</td>
+  <td>218</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>6</td>
+  <td class="mono">20260616_211933_605423</td>
+  <td>1.8107</td>
+  <td>27.4</td>
+  <td>0.95</td>
+  <td>156</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>7</td>
+  <td class="mono">20260616_211933_616186</td>
+  <td>1.8088</td>
+  <td>19.3</td>
+  <td>1.82</td>
+  <td>191</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>8</td>
+  <td class="mono">20260616_211933_626798</td>
+  <td>1.8037</td>
+  <td>32.3</td>
+  <td>2.15</td>
+  <td>284</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>9</td>
+  <td class="mono">20260616_211933_637395</td>
+  <td>1.8075</td>
+  <td>24.3</td>
+  <td>1.46</td>
+  <td>143</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+1V8</td>
+  <td>10</td>
+  <td class="mono">20260616_211933_647958</td>
+  <td>1.8088</td>
+  <td>24.6</td>
+  <td>1.76</td>
+  <td>214</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>1</td>
+  <td class="mono">20260616_211933_658231</td>
+  <td>3.3021</td>
+  <td>26.2</td>
+  <td>0.70</td>
+  <td>131</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>2</td>
+  <td class="mono">20260616_211933_668967</td>
+  <td>3.3027</td>
+  <td>30.5</td>
+  <td>2.52</td>
+  <td>179</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>3</td>
+  <td class="mono">20260616_211933_679564</td>
+  <td>3.3060</td>
+  <td>64.0</td>
+  <td>6.65</td>
+  <td>600</td>
+  <td class="fail">FAIL</td>
+  <td style="font-size:0.82em">Ripple 64.0 mVpp > 50 mVpp; Deviation 6.7 % > 5 %; Settling 600 µs > 500 µs</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>4</td>
+  <td class="mono">20260616_211933_689897</td>
+  <td>3.3061</td>
+  <td>21.9</td>
+  <td>2.34</td>
+  <td>197</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>5</td>
+  <td class="mono">20260616_211933_700595</td>
+  <td>3.3099</td>
+  <td>27.8</td>
+  <td>2.97</td>
+  <td>164</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>6</td>
+  <td class="mono">20260616_211933_711005</td>
+  <td>3.3114</td>
+  <td>28.7</td>
+  <td>1.49</td>
+  <td>129</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>7</td>
+  <td class="mono">20260616_211933_721721</td>
+  <td>3.3044</td>
+  <td>71.5</td>
+  <td>6.49</td>
+  <td>591</td>
+  <td class="fail">FAIL</td>
+  <td style="font-size:0.82em">Ripple 71.5 mVpp > 50 mVpp; Deviation 6.5 % > 5 %; Settling 591 µs > 500 µs</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>8</td>
+  <td class="mono">20260616_211933_732171</td>
+  <td>3.2955</td>
+  <td>32.3</td>
+  <td>2.13</td>
+  <td>155</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>9</td>
+  <td class="mono">20260616_211933_742759</td>
+  <td>3.3025</td>
+  <td>63.0</td>
+  <td>7.03</td>
+  <td>513</td>
+  <td class="fail">FAIL</td>
+  <td style="font-size:0.82em">Ripple 63.0 mVpp > 50 mVpp; Deviation 7.0 % > 5 %; Settling 513 µs > 500 µs</td>
+</tr>
+<tr>
+  <td>+3V3</td>
+  <td>10</td>
+  <td class="mono">20260616_211933_753636</td>
+  <td>3.3033</td>
+  <td>36.2</td>
+  <td>1.53</td>
+  <td>164</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>1</td>
+  <td class="mono">20260616_211933_764552</td>
+  <td>2.5054</td>
+  <td>20.6</td>
+  <td>1.93</td>
+  <td>126</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>2</td>
+  <td class="mono">20260616_211933_775024</td>
+  <td>2.5085</td>
+  <td>28.0</td>
+  <td>3.17</td>
+  <td>193</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>3</td>
+  <td class="mono">20260616_211933_785923</td>
+  <td>2.5105</td>
+  <td>20.2</td>
+  <td>1.73</td>
+  <td>195</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>4</td>
+  <td class="mono">20260616_211933_796899</td>
+  <td>2.5120</td>
+  <td>17.9</td>
+  <td>2.39</td>
+  <td>207</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>5</td>
+  <td class="mono">20260616_211933_807521</td>
+  <td>2.5111</td>
+  <td>32.3</td>
+  <td>1.83</td>
+  <td>157</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>6</td>
+  <td class="mono">20260616_211933_818433</td>
+  <td>2.5000</td>
+  <td>29.2</td>
+  <td>1.68</td>
+  <td>271</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>7</td>
+  <td class="mono">20260616_211933_829124</td>
+  <td>2.5026</td>
+  <td>29.9</td>
+  <td>0.86</td>
+  <td>162</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>8</td>
+  <td class="mono">20260616_211933_839651</td>
+  <td>2.5060</td>
+  <td>32.9</td>
+  <td>2.67</td>
+  <td>178</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>9</td>
+  <td class="mono">20260616_211933_850013</td>
+  <td>2.5005</td>
+  <td>30.7</td>
+  <td>2.11</td>
+  <td>202</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+<tr>
+  <td>+2V5</td>
+  <td>10</td>
+  <td class="mono">20260616_211933_860715</td>
+  <td>2.5022</td>
+  <td>34.8</td>
+  <td>1.85</td>
+  <td>211</td>
+  <td class="pass">PASS</td>
+  <td style="font-size:0.82em">—</td>
+</tr>
+</table>
+
+<footer>
+  Generated by pdn_transient_test · 2026-06-16 21:19:33 ·
+  Digantara PDN Qualification Test Suite
+</footer>
+</body></html>

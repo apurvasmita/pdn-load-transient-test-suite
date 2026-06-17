@@ -1,0 +1,14 @@
+2026-06-16 21:19:33,437 [INFO    ] main: PDN Transient Test Suite starting
+2026-06-16 21:19:33,438 [INFO    ] main: Log file: results\run_20260616_211933.log
+2026-06-16 21:19:33,446 [INFO    ] src.data_logger: CSV log opened: results\transient_test_20260616_211933.csv
+2026-06-16 21:19:33,447 [WARNING ] main: DRY-RUN MODE — synthetic data, no instruments required
+2026-06-16 21:19:33,906 [INFO    ] src.data_logger: Logged 40 results → results\transient_test_20260616_211933.csv
+2026-06-16 21:19:33,915 [INFO    ] src.data_logger: [+3V6] 10/10 PASS | Vdc=3.6053±0.0041 V | Ripple=35.9 mVpp | Dev=2.3% | Settle=232 µs
+2026-06-16 21:19:33,916 [INFO    ] src.data_logger: [+1V8] 10/10 PASS | Vdc=1.8066±0.0027 V | Ripple=42.0 mVpp | Dev=2.2% | Settle=284 µs
+2026-06-16 21:19:33,917 [INFO    ] src.data_logger: [+3V3] 7/10 PASS | Vdc=3.3044±0.0044 V | Ripple=71.5 mVpp | Dev=7.0% | Settle=600 µs
+2026-06-16 21:19:33,918 [INFO    ] src.data_logger: [+2V5] 10/10 PASS | Vdc=2.5059±0.0045 V | Ripple=34.8 mVpp | Dev=3.2% | Settle=271 µs
+2026-06-16 21:19:33,921 [INFO    ] src.report_generator: HTML report saved: results\pdn_transient_report_20260616_211933.html
+2026-06-16 21:19:33,921 [INFO    ] main: ────────────────────────────────────────────────────────────
+2026-06-16 21:19:33,922 [INFO    ] main: TOTAL: 37 / 40 captures PASS
+2026-06-16 21:19:33,922 [INFO    ] main: CSV  : results\transient_test_20260616_211933.csv
+2026-06-16 21:19:33,923 [INFO    ] main: HTML : results\pdn_transient_report_20260616_211933.html

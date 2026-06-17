@@ -1,0 +1,8 @@
+# pdn_transient_test — Python dependencies
+# Install with:  pip install -r requirements.txt
+
+PyVISA==1.14.1          # VISA instrument communication (GPIB, USB-TMC, TCP)
+PyVISA-py==0.7.2        # Pure-Python VISA backend (no NI-VISA driver needed)
+pyvisa-sim==0.6.0       # Simulated instruments for offline development/CI
+numpy==2.0.2            # Waveform analysis (settling time, statistics)
+pyyaml==6.0.2           # YAML configuration parsing
